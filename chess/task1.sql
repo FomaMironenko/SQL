@@ -1,0 +1,1 @@
+select COUNT(*) AS Nfigures FROM chessboard

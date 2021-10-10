@@ -1,0 +1,1 @@
+SELECT MAX(EmployeeID) FROM Employees 
