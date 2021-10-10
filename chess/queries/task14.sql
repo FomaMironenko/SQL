@@ -1,14 +1,14 @@
+WITH black_king AS (
+	SELECT row, cln, chessman.id
+	FROM chessboard JOIN chessman ON chessboard.id = chessman.id
+	WHERE chessman.color = 'Black' AND chessman.type = 'King' 
+)
+
 SELECT chessman.id
 FROM chessboard JOIN chessman ON chessboard.id = chessman.id 
 WHERE 
-ABS(row - (SELECT row
-	FROM chessboard JOIN chessman ON chessboard.id = chessman.id
-	WHERE chessman.color = 'BLACK' AND chessman.type = 'KING'
-)) <= 2 
+ABS(row - (SELECT row FROM black_king)) <= 2 
   AND
-ABS(ASCII(col) - (SELECT ASCII(col)
-	FROM chessboard JOIN chessman ON chessboard.id = chessman.id
-	WHERE chessman.color = 'BLACK' AND chessman.type = 'KING'
-)) <= 2 
+ABS(ASCII(cln) - (SELECT ASCII(cln) FROM black_king)) <= 2 
   AND
-NOT(chessman.color = 'BLACK' AND chessman.type = 'KING')
+chessman.id <> (SELECT id FROM black_king)
