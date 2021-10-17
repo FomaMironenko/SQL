@@ -1,6 +1,6 @@
 -- DROP PROCEDURE move_knight(INTEGER);
 
-CREATE OR REPLACE PROCEDURE move_knight(figID INT, destCln CHAR(1), destRow SMALLINT)
+CREATE OR REPLACE PROCEDURE move_knight(figId INT, destCln CHAR(1), destRow SMALLINT)
 LANGUAGE plpgsql AS
 $$
 DECLARE 
@@ -19,10 +19,10 @@ BEGIN
 	-- extract figure data
 	SELECT chessboard.cln, chessboard.row, chessman.type INTO c, r, figType
 	FROM chessman JOIN chessboard ON chessman.id = chessboard.id
-	WHERE chessman.id = figID;
+	WHERE chessman.id = figId;
 	-- checks
 	IF c IS NULL OR r IS NULL THEN
-		RAISE EXCEPTION 'ID NOT FOUND: %', figID;
+		RAISE EXCEPTION 'ID NOT FOUND: %', figId;
 	END IF;
 	IF figType <> 'Knight' THEN
 		RAISE EXCEPTION 'FIGURE TYPE IS "%" INSTEAD OF "Knight"', figType;
@@ -38,18 +38,13 @@ BEGIN
 	FROM chessman JOIN chessboard ON chessman.id = chessboard.id
 	WHERE chessboard.cln = destCln AND chessboard.row = destRow;
 	IF toDropId IS NOT NULL THEN
-		IF (SELECT same_color(figID, toDropId)) THEN
+		IF (SELECT same_color(figId, toDropId)) THEN
 			RAISE EXCEPTION 'CAN NOT EAT A FIGURE OF SAME COLOR';
 		END IF;
 		DELETE FROM chessboard WHERE chessboard.id = toDropId;
-		DELETE FROM chessboard WHERE chessboard.id = figID;
-		INSERT INTO chessboard (id, row, cln) VALUES (figID, destRow, destCln);
-		CALL log_move(figId, c, r, destCln, destRow);
-		CALL log_eat(toDropId, destCln, destRow);
-	ELSE 
-		DELETE FROM chessboard WHERE chessboard.id = figID;
-		INSERT INTO chessboard (id, row, cln) VALUES (figID, destRow, destCln);
-		CALL log_move(figId, c, r, destCln, destRow);
+		UPDATE chessboard SET row = destRow, cln = destCln WHERE id = figId;
+	ELSE
+		UPDATE chessboard SET row = destRow, cln = destCln WHERE id = figId;
 	END IF;
 END 
 $$

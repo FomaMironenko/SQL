@@ -1,0 +1,9 @@
+CREATE OR REPLACE PROCEDURE log_eat(toDropId INT, figCln CHAR(1), figRow SMALLINT)
+LANGUAGE plpgsql AS
+$$ 
+DECLARE 
+
+BEGIN
+
+END
+$$
