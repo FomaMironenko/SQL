@@ -1,0 +1,2 @@
+SELECT * FROM Yacht
+ORDER BY name
